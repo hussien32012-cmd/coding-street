@@ -45,7 +45,7 @@ Rules:
       return res.status(502).json({ error: data.error?.message || 'Groq API Error' });
     }
 
-    const reply = data.choices[0].message.content.trim();
+const reply = data.choices[0].message.content.trim();
     return res.status(200).json({ reply });
   } catch (error) {
     return res.status(502).json({ error: error.message });
