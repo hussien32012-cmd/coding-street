@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const MODEL = process.env.MODEL || 'llama-3.3-70b-versatile';
 
   if (!KEY) {
-    return res.status(500).json({ error: 'GROQ_API_KEY is missing' });
+    return res.status(500).json({ error: 'GROQ_API_KEY is missing in Vercel' });
   }
 
   const SYSTEM = `You are "Coding", the intelligent AI assistant of Coding Street, an online programming platform founded by Hussein Mahmoud Galal.
@@ -27,7 +27,7 @@ Rules:
   }
 
   try {
-const response = await fetch('https://groq.com', {
+    const response = await fetch('https://groq.com', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,9 +45,10 @@ const response = await fetch('https://groq.com', {
       return res.status(502).json({ error: data.error?.message || 'Groq API Error' });
     }
 
-const reply = data.choices[0].message.content.trim();
+    const reply = data.choices[0].message.content.trim();
     return res.status(200).json({ reply });
   } catch (error) {
     return res.status(502).json({ error: error.message });
   }
 }
+
