@@ -36,9 +36,12 @@ app.post('/api/chat', async (req, res) => {
   const msgs = raw
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
     .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }));
+  
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();
 
-  if (!msgs.length || msgs[msgs.length - 1].role !== 'user') return res.status(400).json({ error: 'Bad request' });
+  if (!msgs.length || msgs[msgs.length - 1].role !== 'user') {
+    return res.status(400).json({ error: 'Bad request' });
+  }
 
   try {
     const r = await fetch('https://groq.com', {
@@ -53,11 +56,13 @@ app.post('/api/chat', async (req, res) => {
         max_tokens: 1500
       })
     });
+    
     const d = await r.json();
     if (!r.ok) {
       console.error('Groq error:', (d.error && d.error.message) || r.status);
       return res.status(502).json({ error: 'AI error' });
     }
+    
     const reply = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || '').trim();
 
     if (!reply) {
@@ -74,4 +79,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => console.log('Coding Street running on port ' + PORT));
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log('Coding Street running on port ' + PORT));
+}
+
+module.exports = app;
