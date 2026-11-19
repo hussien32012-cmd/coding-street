@@ -27,7 +27,7 @@ Rules:
   }
 
   try {
-const response = await fetch('https://groq.com', {
+const response = await https://api.groq.com/openai/v1/chat/completions
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
