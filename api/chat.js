@@ -27,7 +27,7 @@ Rules:
   }
 
   try {
-    const response = await fetch('https://groq.com', {
+const response = await fetch('https://groq.com', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
