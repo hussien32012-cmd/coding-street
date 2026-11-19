@@ -17,7 +17,7 @@ Rules:
 
 app.set('trust proxy', 1);
 app.use(express.json({ limit: '20kb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 const hits = new Map();
 function limited(ip) {
@@ -36,7 +36,7 @@ app.post('/api/chat', async (req, res) => {
   const msgs = raw
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
     .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }));
- while (msgs.length && msgs[0].role !== 'user') msgs.shift();
+  while (msgs.length && msgs[0].role !== 'user') msgs.shift();
 
   if (!msgs.length || msgs[msgs.length - 1].role !== 'user') return res.status(400).json({ error: 'Bad request' });
 
@@ -55,7 +55,7 @@ app.post('/api/chat', async (req, res) => {
     });
     const d = await r.json();
     if (!r.ok) {
-console.error('Groq error:', (d.error && d.error.message) || r.status);
+      console.error('Groq error:', (d.error && d.error.message) || r.status);
       return res.status(502).json({ error: 'AI error' });
     }
     const reply = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || '').trim();
@@ -72,3 +72,6 @@ console.error('Groq error:', (d.error && d.error.message) || r.status);
 });
 
 app.listen(PORT, () => console.log('Coding Street running on http://localhost:' + PORT));
+
+  
+
