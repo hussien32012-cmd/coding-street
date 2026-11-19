@@ -36,7 +36,7 @@ app.post('/api/chat', async (req, res) => {
   const msgs = raw
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
     .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }));
-  
+
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();
 
   if (!msgs.length || msgs[msgs.length - 1].role !== 'user') {
@@ -56,13 +56,13 @@ app.post('/api/chat', async (req, res) => {
         max_tokens: 1500
       })
     });
-    
+
     const d = await r.json();
     if (!r.ok) {
       console.error('Groq error:', (d.error && d.error.message) || r.status);
       return res.status(502).json({ error: 'AI error' });
     }
-    
+
     const reply = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || '').trim();
 
     if (!reply) {
@@ -84,3 +84,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+
+
