@@ -70,6 +70,9 @@ app.post('/api/chat', async (req, res) => {
     res.status(502).json({ error: 'AI unreachable' });
   }
 });
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.listen(PORT, () => console.log('Coding Street running on http://localhost:' + PORT));
 
