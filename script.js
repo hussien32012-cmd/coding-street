@@ -86,12 +86,28 @@ const KB=[[/^(hi|hello|hey|salam)|مرحب|اهلا|أهلا|سلام|هاي/i,'
 [/js|javascript|جافا/i,'JavaScript adds behavior: clicks, forms, data. Test small snippets in the Playground with console.log().','JavaScript بيضيف التفاعل: ضغطات ونماذج وبيانات. جرّب أكواد صغيرة في ساحة التجربة.'],
 [/python|بايثون/i,'Python is great for beginners: clear syntax for automation, data and backends.','بايثون ممتازة للمبتدئين: سهلة وتنفع للأتمتة والبيانات والسيرفرات.'],
 [/error|bug|problem|issue|مشكلة|خطأ|شغال/i,'Tell me which page you are on and what you clicked. Reloading with Ctrl+F5 fixes most display issues.','قولي إنت في أنهي صفحة وضغطت على إيه. جرّب Ctrl+F5 لإعادة التحميل.']];
-function chips(a){const d=document.createElement('div');d.className='chips';(a?['إزاي أشترك؟','نسيت كلمة المرور','تثبيت التطبيق','رفع فيديو']:['How do I enroll?','Forgot password','Install the app','Upload videos']).forEach(x=>{const b=document.createElement('button');b.textContent=x;b.onclick=()=>{ki.value=x;kong()};d.appendChild(b)});km.appendChild(d);km.scrollTop=1e9}
-function tk(){kp.style.display=kp.style.display=='block'?'none':'block';if(!km.children.length){bot('Hi! I am Coding, your Coding Street support assistant. What problem did you run into?');chips(0)}}
+function tk(){
+  kp.style.display = kp.style.display == 'block' ? 'none' : 'block';
+
+  if(!km.children.length){
+    bot('Hi! I am Coding, your Coding Street AI assistant. Ask me anything!');
+  }
+}
 function add(c,x){const d=document.createElement('div');d.className='m '+c;d.textContent=x;km.appendChild(d);km.scrollTop=1e9}
 const bot=x=>add('b',x);
 let hist=[];
-function offline(x){const a=A.test(x),k=KB.find(([r])=>r.test(x));if(k)bot(a?k[2]:k[1]);else{bot(a?'مش متأكد من الإجابة. جرّب واحد من دول:':'I am not sure about that yet. Try one of these:');chips(a)}}
+function offline(x){
+  const a = A.test(x);
+  const k = KB.find(([r]) => r.test(x));
+
+  if(k){
+    bot(a ? k[2] : k[1]);
+  }else{
+    bot(a
+      ? 'مش قادر أجاوب على السؤال حاليًا. حاول مرة تانية.'
+      : 'I cannot answer right now. Please try again.');
+  }
+}
 async function kong(){const x=ki.value.trim();if(!x)return;ki.value='';add('u',x);hist.push({role:'user',content:x});
  const w=document.createElement('div');w.className='m b';w.textContent='…';km.appendChild(w);km.scrollTop=1e9;
  try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist.slice(-12)})});
