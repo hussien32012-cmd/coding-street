@@ -15,7 +15,6 @@ Rules:
 - Platform info: Coding Street is created by Hussein Mahmoud Galal. Users can sign up, enroll in courses, upload files, and customize their profile picture.
 - Never ask for passwords or sensitive personal data.`;
 
-
 app.set('trust proxy', 1);
 app.use(express.json({ limit: '20kb' }));
 app.use(express.static(__dirname));
@@ -62,7 +61,6 @@ app.post('/api/chat', async (req, res) => {
     const reply = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || '').trim();
 
     if (!reply) {
-      console.error('Groq returned an empty reply');
       return res.status(502).json({ error: 'Empty reply' });
     }
     res.json({ reply });
@@ -71,11 +69,9 @@ app.post('/api/chat', async (req, res) => {
     res.status(502).json({ error: 'AI unreachable' });
   }
 });
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => console.log('Coding Street running on http://localhost:' + PORT));
-
-  
-
+app.listen(PORT, () => console.log('Coding Street running on port ' + PORT));
