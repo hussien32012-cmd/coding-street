@@ -103,3 +103,38 @@ let dp=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;r
 function inst(){if(dp){dp.prompt();dp=null;render()}}
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 render();
+// --- ميزة رفع وحفظ صورة البروفايل لكل مستخدم ---
+function uploadProfilePic(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 150;
+      canvas.height = 150;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, 150, 150);
+
+      const compressedImage = canvas.toDataURL('image/jpeg', 0.8);
+      localStorage.setItem('codingStreetUserAvatar', compressedImage);
+
+      const avatarEl = document.getElementById('userAvatarImg');
+      if (avatarEl) {
+        avatarEl.src = compressedImage;
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+window.addEventListener('load', function() {
+  const savedAvatar = localStorage.getItem('codingStreetUserAvatar');
+  const avatarEl = document.getElementById('userAvatarImg');
+  if (savedAvatar && avatarEl) {
+    avatarEl.src = savedAvatar;
+  }
+});
